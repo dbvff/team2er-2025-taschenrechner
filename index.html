@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        2er-Team Quali 2025 | Reps to Time Calculator
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+  </head>
+
+  <body>
+    <!-- html with bulm css -->
+    <section class="section">
+
+      <div class="container" style="width:100%; max-width:240px !important;">
+        <!-- <h1 class="title">
+          Repeatable Test of Fitness
+        </h1> -->
+        <p class="subtitle">
+          Umrechung
+        </p>
+
+        <p class="block info">
+          Mit diesem Taschenrechner kannst du Zeit MM:SS berechnen, 
+          die du für die 2er-Team-Quali eintragen musst, 
+          wenn du beim Endurance-Test oder Skill-Test ins Timecap (TC)
+          gelaufen bist.
+        </p>
+
+
+        <div class="fixed-grid has-3-cols block">
+          <div class="control radios">
+            <label class="radio">
+              <input type="radio" name="gender" />
+              Frau
+            </label>
+            <label class="radio">
+              <input type="radio" name="gender" />
+              Mann
+            </label>
+          </div>
+        </div>
+
+        <p class="subtitle">Endurance-Test</p>
+        <div class="fixed-grid has-2-cols block">
+          <div class="grid control">
+            <div class="cell">
+              <input id="reps_endu" class="input" type="number" placeholder="Reps">
+            </div>
+            <div class="cell">
+              <p class="has-text-success" id="time_endu"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <p class="has-text-danger" id="error_endu"></p>
+        </div>
+
+        <div class="buttons block">
+          <button type="submit" onclick="calcScoreEndu();" class="button is-primary">
+            Berechnen
+          </button>
+        </div>
+
+
+
+        <p class="subtitle">Skill-Test</p>
+        <div class="fixed-grid has-2-cols block">
+          <div class="grid control">
+            <div class="cell">
+              <input id="reps_skill" class="input" type="number" placeholder="Reps">
+            </div>
+            <div class="cell">
+              <p class="has-text-success" id="time_skill"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <p class="has-text-danger" id="error_skill"></p>
+        </div>
+
+        <div class="buttons block">
+          <button type="submit" onclick="calcScoreSkill();" class="button is-primary">
+            Berechnen
+          </button>
+        </div>
+
+
+      </div>
+    </section>
+  </body>
+
+  <script>
+    const calcScoreEndu = () => {
+      document.getElementById('error_endu').innerHTML = ""
+      document.getElementById('time_endu').innerHTML = ""
+
+      // Repzahl gesetzt
+      var reps = document.getElementById('reps_endu').value;
+      if( reps.length == 0 ){
+        document.getElementById('error_endu').innerHTML = "Angaben unvollständig"
+        return;
+      }
+      reps = Number(reps);
+      console.log("Reps:", reps);
+
+
+      // read radio buttons
+      var gender = document.getElementsByName('gender');
+      var cnt = 0;
+      gender.forEach((x) => {if(x.checked){cnt += 1;}})
+      if(cnt == 0){
+        document.getElementById('error_endu').innerHTML = "Bitte wähle Frau/Mann aus"
+        return;
+      }
+      if( gender[0].checked ){
+        gender = "female";
+      } else if( gender[1].checked ){
+        gender = "male";
+      }
+      console.log("Gender", gender)
+      
+      // are numbers within range
+      if( gender=="female" & (reps < 1 | reps > 219) ){
+        document.getElementById('error_endu').innerHTML = "Reps müssen zwischen 1 und 219 sein."
+        return;
+      }
+      if( gender=="male" & (reps < 1 | reps > 249) ){
+        document.getElementById('error_endu').innerHTML = "Reps müssen zwischen 1 und 249 sein."
+        return;
+      }
+
+      // berechne penalty
+      var pen = 0;
+      if( gender == "female" ){
+        pen = 220 - reps; 
+      }else if( gender = "male" ){
+        pen = 250 - reps;
+      }
+      const tscore = 900 + 5 * pen;
+
+      // in MM:SS zurückrechnen
+      const tmin = Math.floor(tscore / 60);
+      const tsec = tscore % 60;
+      document.getElementById('time_endu').innerHTML = `Deine Zeit: <br><strong>${tmin.toString().padStart(2, '0')}:${tsec.toString().padStart(2, '0')}</strong>`
+    }
+
+
+    const calcScoreSkill = () => {
+      document.getElementById('error_skill').innerHTML = ""
+      document.getElementById('time_skill').innerHTML = ""
+
+      // Repzahl gesetzt
+      var reps = document.getElementById('reps_skill').value;
+      if( reps.length == 0 ){
+        document.getElementById('error_skill').innerHTML = "Angaben unvollständig"
+        return;
+      }
+      reps = Number(reps);
+      console.log("Reps:", reps);
+
+
+      // read radio buttons
+      var gender = document.getElementsByName('gender');
+      var cnt = 0;
+      gender.forEach((x) => {if(x.checked){cnt += 1;}})
+      if(cnt == 0){
+        document.getElementById('error_skill').innerHTML = "Bitte wähle Frau/Mann aus"
+        return;
+      }
+      if( gender[0].checked ){
+        gender = "female";
+      } else if( gender[1].checked ){
+        gender = "male";
+      }
+      console.log("Gender", gender)
+      
+      // are numbers within range
+      if( gender=="female" & (reps < 1 | reps > 263) ){
+        document.getElementById('error_skill').innerHTML = "Reps müssen zwischen 1 und 263 sein."
+        return;
+      }
+      if( gender=="male" & (reps < 1 | reps > 266) ){
+        document.getElementById('error_skill').innerHTML = "Reps müssen zwischen 1 und 266 sein."
+        return;
+      }
+
+      // berechne penalty
+      var pen = 0;
+      if( gender == "female" ){
+        pen = 264 - reps; 
+      }else if( gender = "male" ){
+        pen = 267 - reps;
+      }
+      const tscore = 480 + 2 * pen;
+
+      // in MM:SS zurückrechnen
+      const tmin = Math.floor(tscore / 60);
+      const tsec = tscore % 60;
+      document.getElementById('time_skill').innerHTML = `Deine Zeit: <br><strong>${tmin.toString().padStart(2, '0')}:${tsec.toString().padStart(2, '0')}</strong>`
+    }
+  </script>
+</html>
